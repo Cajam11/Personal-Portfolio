@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { Github, Mail, ExternalLink, X, Code2, FlaskConical, Rocket, Trophy, GraduationCap, Linkedin, Instagram, Award, Minus } from "lucide-react";
+import { Mail, ExternalLink, X, Code2, FlaskConical, Rocket, Trophy, GraduationCap, Award, Minus } from "lucide-react";
+import { Github, Linkedin, Instagram } from "./BrandIcons";
 import Link from "next/link";
 import { PROJECTS } from "../data/projects";
 import Header from "./Header";
