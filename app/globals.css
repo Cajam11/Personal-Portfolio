@@ -1,6 +1,36 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+/*
+  Everything below is this site's own design system, wrapped in the components
+  layer on purpose.
+
+  Tailwind v4 emits its utilities inside real cascade layers, and unlayered CSS
+  beats layered CSS regardless of specificity or source order. Left unlayered,
+  a rule like `.nav-theme-toggle { display: inline-flex }` would quietly win
+  over `md:hidden`, so the mobile-only theme toggle showed up on desktop too.
+  Sitting in `components` puts these rules before `utilities` in the layer
+  order, so the responsive helpers in the markup can do their job -- while
+  still overriding Tailwind's preflight, which lives in the earlier `base`.
+*/
+@layer components {
 
 :root {
   --bg: #D9DADD;
@@ -3597,4 +3627,5 @@ html.dark img[src="/images/logos/express.svg"] {
   .page-wipe {
     display: none;
   }
+}
 }
