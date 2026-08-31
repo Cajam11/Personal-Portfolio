@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ThemeProvider } from "../components/ThemeProvider";
+import { PageTransitionProvider } from "../components/PageTransition";
 
 export const metadata = {
   title: "FILIP PAUČO",
@@ -44,7 +45,9 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ThemeProvider>
-          {children}
+          <PageTransitionProvider>
+            {children}
+          </PageTransitionProvider>
         </ThemeProvider>
       </body>
     </html>
