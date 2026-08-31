@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import { Github, Mail, ExternalLink, X, Code2, FlaskConical, Rocket, Trophy, GraduationCap, Linkedin, Instagram, Award, Minus } from "lucide-react";
 import Link from "next/link";
 import { PROJECTS } from "../data/projects";
@@ -109,6 +109,10 @@ const CURRENTLY = [
   { icon: Code2, label: "Shipping", detail: "Reward - fashion marketplace" },
   { icon: GraduationCap, label: "Studying", detail: "Programming & Digital Technologies" },
 ];
+
+// useLayoutEffect warns when React renders this on the server; the marquee
+// measurement below only makes sense in a browser anyway.
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const CERTIFICATIONS = [
   { title: "Claude Code in Action", issuer: "Anthropic" },
@@ -368,6 +372,7 @@ export default function Portfolio() {
   const [formStatus, setFormStatus] = useState("idle");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [marqueeReady, setMarqueeReady] = useState(false);
   const activeProject = PROJECTS[activeIndex];
 
   useEffect(() => {
@@ -394,7 +399,11 @@ export default function Portfolio() {
     return () => window.removeEventListener("mousemove", handleMouse);
   }, []);
 
-  useEffect(() => {
+  // Layout effect, not a plain effect: --marquee-loop-duration has to be in
+  // place before the first paint. Setting it afterwards changes the duration of
+  // an already-running animation, which the browser rescales mid-flight and
+  // shows up as the marquee stuttering for a moment before settling.
+  useIsomorphicLayoutEffect(() => {
     const track = marqueeTrackRef.current;
     if (!track) return;
 
@@ -410,8 +419,47 @@ export default function Portfolio() {
     };
 
     syncMarqueeSpeed();
+
+    let cancelled = false;
+    let raf1 = 0;
+    let raf2 = 0;
+
+    // The track sits paused until this flips (see .hero-root--marquee-ready).
+    // Two frames of headroom: this page mounts a lot of DOM at once, and the
+    // marquee's own layer -- very wide stroked text -- has to be rasterised
+    // before it can move. Starting the loop while that is still happening is
+    // what made it judder for its first moment and then settle.
+    const startMarquee = () => {
+      raf1 = requestAnimationFrame(() => {
+        raf2 = requestAnimationFrame(() => {
+          if (!cancelled) setMarqueeReady(true);
+        });
+      });
+    };
+
+    // Cold load: the first measurement uses the fallback font, so the text is a
+    // different width than it will be once Inter arrives. Wait for the real
+    // font before starting, so the duration is set once and the animation never
+    // has to be reconfigured while running. On a warm client navigation fonts
+    // are already loaded and this resolves immediately.
+    const fonts = typeof document !== "undefined" ? document.fonts : null;
+    if (fonts && fonts.status !== "loaded") {
+      fonts.ready.then(() => {
+        if (cancelled) return;
+        syncMarqueeSpeed();
+        startMarquee();
+      });
+    } else {
+      startMarquee();
+    }
+
     window.addEventListener("resize", syncMarqueeSpeed);
-    return () => window.removeEventListener("resize", syncMarqueeSpeed);
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(raf1);
+      cancelAnimationFrame(raf2);
+      window.removeEventListener("resize", syncMarqueeSpeed);
+    };
   }, []);
 
   useEffect(() => {
@@ -474,7 +522,7 @@ export default function Portfolio() {
       <Header />
 
       {/* HERO */}
-      <section id="hero" className="hero-root" ref={heroRef}>
+      <section id="hero" className={`hero-root${marqueeReady ? " hero-root--marquee-ready" : ""}`} ref={heroRef}>
 
 <div className="bg-name-marquee">
           <div className="bg-name-track" ref={marqueeTrackRef}>

@@ -130,7 +130,15 @@ body::before {
   display: flex;
   width: max-content;
   animation: marquee var(--marquee-loop-duration, 18s) linear infinite;
+  /* Held still until the hero has measured its final duration and the page has
+     settled; Portfolio.jsx then adds .hero-root--marquee-ready. Starting the
+     loop any earlier makes it judder through its first moment. */
+  animation-play-state: paused;
   will-change: transform;
+}
+
+.hero-root--marquee-ready .bg-name-track {
+  animation-play-state: running;
 }
 
 .bg-name-text {
