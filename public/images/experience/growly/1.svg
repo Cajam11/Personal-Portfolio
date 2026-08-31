@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640">
+  <rect width="900" height="640" fill="#1f2937"/>
+  <g opacity="0.15" stroke="#ffffff" stroke-width="2" fill="none">
+    <rect x="60" y="60" width="780" height="520" rx="12"/>
+  </g>
+  <circle cx="450" cy="270" r="70" fill="#ffffff" opacity="0.25"/>
+  <rect x="300" y="380" width="300" height="18" rx="9" fill="#ffffff" opacity="0.25"/>
+  <text x="450" y="480" font-family="Arial, sans-serif" font-size="26" fill="#ffffff" opacity="0.6" text-anchor="middle">Photo placeholder 1</text>
+</svg>

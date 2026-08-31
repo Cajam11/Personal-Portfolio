@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700">
+  <rect width="900" height="700" rx="24" fill="#0f172a"/>
+  <g fill="none" stroke="#facc15" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M330 180 h240 v90 a120 120 0 0 1 -240 0 z"/>
+    <path d="M330 200 h-70 a70 70 0 0 0 70 90"/>
+    <path d="M570 200 h70 a70 70 0 0 1 -70 90"/>
+    <path d="M450 390 v70"/>
+    <path d="M380 520 h140"/>
+    <path d="M410 460 h80 v60 h-80 z"/>
+  </g>
+  <text x="450" y="620" font-family="Arial, sans-serif" font-size="26" fill="#ffffff" opacity="0.55" text-anchor="middle">PLACEHOLDER — replace with your awards photo</text>
+</svg>
